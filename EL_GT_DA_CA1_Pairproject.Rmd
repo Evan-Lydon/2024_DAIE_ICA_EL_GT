@@ -13,65 +13,42 @@ output: html_notebook
 5. [Discussion](#discussion)
 6. [References](#references)
 
-# Abstract
 
-## Aim and Rationale
+# Abstract
 
 This study investigates whether Virtual Reality (VR)-based therapy is more effective than traditional Cognitive Behavioural Therapy (CBT) in reducing depression scores, with a specific focus on gender differences in treatment outcomes. Given the rising interest in innovative treatment approaches, this study evaluates the potential interaction effects between gender and treatment type.
 
-## Participants and Setting
-
 A total of 200 participants (95 males, 105 females) aged 18-40 from a mental health clinic participated in the study. Participants were randomized into either the VR therapy or CBT group.
 
-## Experiment Design
-
 Participants underwent 12 weeks of treatment, with weekly 50-minute sessions led by certified therapists. Depression severity was assessed pre- and post-treatment using the Zung Self-Rating Depression Scale (SDS).
-
-## Findings/Implications
 
 Initial results suggest VR therapy led to greater improvements in depression scores compared to CBT. Moreover, gender differences indicated variations in treatment efficacy, highlighting the importance of personalized treatment approaches to mental health therapy.
 
 # Introduction
 
-## Topic and Context
-
 Depression is a widespread mental health problem that affects millions of people around the world. Depression can appear in many different forms, which includes Persistent Depressive Disorder and Major Depressive Disorder. People who suffer from depression often find it hard to do everyday tasks due to ongoing feelings of sadness, hopelessness and a general lack of joy or interest in most tasks or activities. The World Health Organization Approximates that 280 million people in the world have depression.
-
-## Theoretical Framework
 
 Traditional therapeutic approaches have their limitations. Not all people who may need these approaches have access to them, or they may not be comfortable with seeing a therapist in person as well. With this problem, VR based therapy can offer an innovative solution.
 
-## Summary of Previous Work
-
 There is some research that has shown some positive results with VR therapy for depression treatment. Studies like those by Juszko et al. (2023) show the value of immersive vr therapy in alleviating the symptoms of depression while highlighting teh gender differences in response to therapy.
-
-## Rationale
 
 Address the urgent need for effective treatment options and explore the potential of VR therapy.
 
-## Hypothesis
+Before we dive into the analysis, it's important to establish our hypotheses. We will examine the interaction between gender and treatment type on depression scores to determine whether these variables have a combined effect. 
 
-Null Hypothesis (H₀): There is no interaction effect between gender and treatment type (VR-based therapy vs. traditional CBT) on the change in depression scores. 
+Null Hypothesis (H₀): There is no interaction effect between gender and treatment type (VR-based therapy vs. traditional CBT) on the change in depression scores.
 
 Alternative Hypothesis (H₁): There is a significant interaction effect between gender and treatment type, such that the effectiveness of treatment differs based on gender. 
 
 # Method
 
-## Participants
-
 The Participants consisted of 200 psychotherapy patients undergoing treatment for depression, 95 were male and 105 were female. Participants were adults aged 18-40 years, randomly sampled from the clinic client list, and randomly assigned to one of two groups: Control (46 males, 54 females) or Experimental (49 males, 51 females). Gender information was recorded, but exact ages were not.
 
-## Design
-
 Participants of the Control group received traditional CBT while the experimental group underwent VR-based therapy. Both groups received 12 weeks of treatment with a therapist, with sessions lasting 50 minutes each week. Depression measurements were taken at the beginning and the end of the study using a self-report mechanism
-
-## Materials
 
 The self-report mechanism that was used was the Zung Self-Rating Depression Scale (SDS). 
 
 # Results
-
-## Descriptive Statistics
 
 Table 1 below presents the mean change in depression scores by gender and treatment type: Participants are divided into Female and Male groups to analyze gender-specific responses to therapy. Females in the Experimental (VR) group had the largest mean reduction in depression scores (Mean = 13.51) with moderate variability (SD = 3.09). VR therapy appears more effective than CBT, particularly for female participants.
 
@@ -81,7 +58,7 @@ library(knitr)
 library(dplyr)
 
 # Read the data from the CSV file
-data <- read.csv("C:/Users/evan_/Documents/College/participants_data_final.csv")
+data <- read.csv("C:/Users/evan_/Documents/College/Data Analytics/participants_data_final.csv")
 
 # Calculate summary statistics
 summary_table <- data %>%
@@ -89,7 +66,8 @@ summary_table <- data %>%
   summarise(
     Mean_Change = mean(Change_in_Score),
     SD_Change = sd(Change_in_Score),
-    Count = n()
+    Count = n(),
+    .groups = "drop"
   )
 
 # Print table using kable
@@ -100,16 +78,114 @@ kable(summary_table, col.names = c("Group", "Gender", "Mean Change", "SD Change"
 cat("Table 1: Mean Change in Scores by Gender and Group")
 ```
 
-This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+The following figures illustrate key data distributions and comparisons:
 
-Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+```{r plot-mean-change-scores, echo=FALSE}
+# Load necessary libraries
+library(ggplot2)
 
-```{r}
-plot(cars)
+# Calculate summary statistics
+mean_change_scores <- data %>%
+  group_by(Group, Gender) %>%
+  summarise(
+    Mean_Change = mean(Change_in_Score, na.rm = TRUE),
+    SD_Change = sd(Change_in_Score, na.rm = TRUE),
+    Count = n(),
+    .groups = "drop"
+  )
+
+# Plot the mean change scores
+ggplot(mean_change_scores, aes(x = Group, y = Mean_Change, fill = Gender)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  geom_errorbar(aes(ymin = Mean_Change - SD_Change, ymax = Mean_Change + SD_Change),
+                width = 0.2, position = position_dodge(0.9)) + 
+  labs(title = "Mean Change in Scores by Gender and Group",
+       x = "Group",
+       y = "Mean Change in Scores") +
+  theme_minimal() +
+  scale_fill_manual(values = c("lightblue", "pink"))
+ 
+# Add caption text 
+cat("Figure 1: Mean Change in Scores by Gender and Group.")
 ```
 
-Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+Females (shown in blue) experienced greater improvements in depression scores compared to males (shown in pink) across both therapy types. The error bars (standard deviations) indicate greater variability in scores for males, particularly in the VR group, suggesting less consistent responses compared to females.
 
-When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+```{r plot-histogram1, echo=FALSE}
+# Plotting histograms and density lines
+# Histogram for Post-Treatment Scores
+hist(participants_data_final$Post_Treatment_Score,
+     main = "Distribution of Post-Treatment Scores",
+     xlab = "Post-Treatment Score",
+     col = "lightgreen",    
+     border = "black",   
+     breaks = 15)
 
-The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+# Add caption text 
+cat("Figure 2: Distribution of Post-Treatment Scores.")
+
+```
+
+This histogram displays the distribution of post-treatment scores for participants in the study. The x-axis represents the post-treatment scores, while the y-axis shows the frequency of participants within each score range. The majority of participants scored between 20 and 30, indicating that a large portion experienced relatively low post-treatment depression scores, suggesting effective treatment outcomes.
+
+```{r plot-histogram2, echo=FALSE}
+# Plotting histograms and density lines
+# Histogram for Pre-Treatment Scores
+hist(participants_data_final$Pre_Treatment_Score,
+     main = "Distribution of Pre-Treatment Scores",
+     xlab = "Pre-Treatment Score",
+     col = "lightblue",       
+     border = "black",        
+     breaks = 15)
+
+# Add caption text 
+cat("Figure 3: Distribution of Pre-Treatment Scores.")
+```
+
+This histogram illustrates the distribution of pre-treatment scores for participants in the study. The x-axis represents the pre-treatment scores, and the y-axis shows the frequency of participants within each score range. The scores are widely distributed, ranging from approximately 20 to 80, indicating participants started with varying levels of depression severity.
+
+```{r change-in-scores-plots, echo=FALSE}
+# Assign the data to the object 'participants_data_final' 
+participants_data_final <- data 
+# Boxplot for Change in Scores by Group 
+boxplot(Change_in_Score ~ Group, data = participants_data_final, main = "Comparison of Change in Scores by Group", xlab = "Group", ylab = "Change in Score", col = c("lightblue", "lightgreen"), border = "black")
+
+# Add caption text 
+cat("Figure 4: Comparison of Change in Scores by Group.")
+```
+
+This boxplot compares the change in depression scores between two treatment groups—Control (CBT) and Experimental (VR). This graph highlights that while both treatments were effective, VR therapy produced slightly larger and more variable improvements.
+
+# Discussion
+
+The findings indicate that VR therapy has a slightly more significant effect on reducing depression scores than traditional CBT. Additionally, gender appears to influence treatment effectiveness, suggesting that males and females may respond differently to VR therapy. These findings support the alternative hypothesis, demonstrating an interaction effect between gender and treatment type.
+
+The results reveal a notable gender disparity in treatment outcomes. Females in the experimental VR group showed the highest mean reduction in depression scores (Mean Change = 13.51, SD = 3.09), whereas males exhibited a more modest improvement (Mean Change = 4.53, SD = 3.80). Similarly, females in the CBT group experienced a mean reduction of 10.00 (SD = 0.00), outperforming males who showed a mean reduction of 4.26 (SD = 3.25). These findings highlight the need to consider gender when designing and implementing mental health therapies. Women in the VR therapy group exhibited the greatest reduction in depression scores, suggesting that immersive and interactive experiences may resonate more strongly with female participants. Conversely, men displayed less impressive improvements across both therapy methods, which points to the need for different strategies to address specific male therapeutic needs. 
+
+The results align with prior studies showing VR therapy's effectiveness in mental health treatment. Juszko et al. (2023) reported that "VR therapy as an adjunctive treatment for post-stroke rehabilitation seems especially effective for women with elevated depressive symptoms," highlighting the potential for VR-based interventions to address gender-specific needs in mental health treatment. . Additionally, research by Espinosa et al. (2022) suggests that repetitive negative thinking processes, are more common in female variations of depression and anxiety. This suggests a need for tailored approaches to treatment by gender. 
+
+Recent articles including Hatta et al. (2022) and Li Pira et al. (2023), have examined the potential of VR technologies in mental health interventions, reinforcing their ability to enhance emotional regulation and overall well-being. Our data which shows that vr therapies are a little more effective for women suffering depression than for men may prove useful in deciding how best to treat an individual and whether the vr therapies would be a good fit or not. 
+
+# References
+
+Espinosa, F., Martin-Romero, N., and Sanchez-Lopez, A. (2022) 'Repetitive Negative Thinking Processes Account for Gender Differences in Depression and Anxiety During Adolescence', *International Journal of Cognitive Therapy*, 15, pp. 115–133. Available at: [https://link.springer.com/article/10.1007/s41811-022-00133-1](https://link.springer.com/article/10.1007/s41811-022-00133-1) (Accessed: 19 December 2024).
+
+Juszko, K., Kiper, P., Wrzeciono, A., Cieślik, B., Gajda, R., and Szczepańska-Gieracha, J. (2023) 'Factors associated with the effectiveness of immersive virtual therapy in alleviating depressive symptoms during sub-acute post-stroke rehabilitation: a gender comparison', *BMC Sports Science, Medicine and Rehabilitation*, 15, Article number: 137. Available at: [https://bmcsportsscimedrehabil.biomedcentral.com/articles/10.1186/s13102-023-00742-z](https://bmcsportsscimedrehabil.biomedcentral.com/articles/10.1186/s13102-023-00742-z) (Accessed: 18 December 2024).
+
+Hatta, M.H., Sidi, H., Koon, C.S., Roos, N.A.C., Sharip, S., Abdul Samad, F.D., Xi, O.W., Das, S., and Mohamed Saini, S. (2022) 'Virtual Reality (VR) Technology for Treatment of Mental Health Problems during COVID-19: A Systematic Review', *International Journal of Environmental Research and Public Health*, 19(9), p. 5389. Available at: [https://doi.org/10.3390/ijerph19095389](https://doi.org/10.3390/ijerph19095389) (Accessed: 03 January 2025).
+
+Li Pira, G., Aquilini, B., Davoli, A., Grandi, S., and Ruini, C. (2023) 'The Use of Virtual Reality Interventions to Promote Positive Mental Health: Systematic Literature Review', *JMIR Mental Health*, 10, e44998. Available at: [https://doi.org/10.2196/44998](https://doi.org/10.2196/44998) (Accessed: 28 December 2024).
+
+The Vista Academy (2025) 'A Comprehensive Guide to Hypothesis Testing in Data Analytics', *The Vista Academy*, 3 January. Available at: [https://www.thevistaacademy.com/a-comprehensive-guide-to-hypothesis-testing-in-data-analytics/](https://www.thevistaacademy.com/a-comprehensive-guide-to-hypothesis-testing-in-data-analytics/) (Accessed: 03 January 2025).
+
+Cleypaul, D. (2024) 'Hypothesis Creation for Data Science Projects', *Medium*, 2 May. Available at: [https://medium.com/@duancleypaul/hypothesis-creation-for-data-science-projects-f73d086c392d](https://medium.com/@duancleypaul/hypothesis-creation-for-data-science-projects-f73d086c392d) (Accessed: 03 January 2025).
+
+freeCodeCamp.org (2024) 'R programming for ABSOLUTE beginners', *YouTube*. Available at: [https://www.youtube.com/watch?v=FY8BISK5DpM](https://www.youtube.com/watch?v=FY8BISK5DpM) (Accessed: 07 December 2024).
+
+DataDaft (2024) 'Importing a .csv file to R Studio using the read.csv function', *YouTube*. Available at: [https://www.youtube.com/watch?v=oRaPjJefoTo](https://www.youtube.com/watch?v=oRaPjJefoTo) (Accessed: 10 December 2024).
+
+DataDaft (2024) 'How to import data and install packages. R programming for beginners.', *YouTube*. Available at: [https://www.youtube.com/watch?v=e8B9YU_M5FM](https://www.youtube.com/watch?v=e8B9YU_M5FM) (Accessed: 07 December 2024).
+
+DataDaft (2024) 'R programming tutorial: Add a box plot inside a violin plot using ggplot2 in R', *YouTube*. Available at: [https://www.youtube.com/watch?v=lw5lL1ZdQ_8](https://www.youtube.com/watch?v=lw5lL1ZdQ_8) (Accessed: 11 December 2024).
+
+freeCodeCamp.org (2024) 'Cleaning and manipulating data with the tidyverse: dplyr, readr, and stringr in action (CC121)', *YouTube*. Available at: [https://www.youtube.com/watch?v=tBxGVfvx-Gc](https://www.youtube.com/watch?v=tBxGVfvx-Gc) (Accessed: 10 December 2024).

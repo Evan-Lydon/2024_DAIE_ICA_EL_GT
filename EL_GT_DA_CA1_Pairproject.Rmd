@@ -1,0 +1,115 @@
+---
+title: "A Comprehensive Guide to Hypothesis Testing in Depression Therapy Outcomes"
+authors: "Graham Tormey & Evan Lydon"
+output: html_notebook
+---
+
+# Table of Contents
+
+1. [Abstract](#abstract)
+2. [Introduction](#introduction)
+3. [Method](#method)
+4. [Results](#results)
+5. [Discussion](#discussion)
+6. [References](#references)
+
+# Abstract
+
+## Aim and Rationale
+
+This study investigates whether Virtual Reality (VR)-based therapy is more effective than traditional Cognitive Behavioural Therapy (CBT) in reducing depression scores, with a specific focus on gender differences in treatment outcomes. Given the rising interest in innovative treatment approaches, this study evaluates the potential interaction effects between gender and treatment type.
+
+## Participants and Setting
+
+A total of 200 participants (95 males, 105 females) aged 18-40 from a mental health clinic participated in the study. Participants were randomized into either the VR therapy or CBT group.
+
+## Experiment Design
+
+Participants underwent 12 weeks of treatment, with weekly 50-minute sessions led by certified therapists. Depression severity was assessed pre- and post-treatment using the Zung Self-Rating Depression Scale (SDS).
+
+## Findings/Implications
+
+Initial results suggest VR therapy led to greater improvements in depression scores compared to CBT. Moreover, gender differences indicated variations in treatment efficacy, highlighting the importance of personalized treatment approaches to mental health therapy.
+
+# Introduction
+
+## Topic and Context
+
+Depression is a widespread mental health problem that affects millions of people around the world. Depression can appear in many different forms, which includes Persistent Depressive Disorder and Major Depressive Disorder. People who suffer from depression often find it hard to do everyday tasks due to ongoing feelings of sadness, hopelessness and a general lack of joy or interest in most tasks or activities. The World Health Organization Approximates that 280 million people in the world have depression.
+
+## Theoretical Framework
+
+Traditional therapeutic approaches have their limitations. Not all people who may need these approaches have access to them, or they may not be comfortable with seeing a therapist in person as well. With this problem, VR based therapy can offer an innovative solution.
+
+## Summary of Previous Work
+
+There is some research that has shown some positive results with VR therapy for depression treatment. Studies like those by Juszko et al. (2023) show the value of immersive vr therapy in alleviating the symptoms of depression while highlighting teh gender differences in response to therapy.
+
+## Rationale
+
+Address the urgent need for effective treatment options and explore the potential of VR therapy.
+
+## Hypothesis
+
+Null Hypothesis (H₀): There is no interaction effect between gender and treatment type (VR-based therapy vs. traditional CBT) on the change in depression scores. 
+
+Alternative Hypothesis (H₁): There is a significant interaction effect between gender and treatment type, such that the effectiveness of treatment differs based on gender. 
+
+# Method
+
+## Participants
+
+The Participants consisted of 200 psychotherapy patients undergoing treatment for depression, 95 were male and 105 were female. Participants were adults aged 18-40 years, randomly sampled from the clinic client list, and randomly assigned to one of two groups: Control (46 males, 54 females) or Experimental (49 males, 51 females). Gender information was recorded, but exact ages were not.
+
+## Design
+
+Participants of the Control group received traditional CBT while the experimental group underwent VR-based therapy. Both groups received 12 weeks of treatment with a therapist, with sessions lasting 50 minutes each week. Depression measurements were taken at the beginning and the end of the study using a self-report mechanism
+
+## Materials
+
+The self-report mechanism that was used was the Zung Self-Rating Depression Scale (SDS). 
+
+# Results
+
+## Descriptive Statistics
+
+Table 1 below presents the mean change in depression scores by gender and treatment type: Participants are divided into Female and Male groups to analyze gender-specific responses to therapy. Females in the Experimental (VR) group had the largest mean reduction in depression scores (Mean = 13.51) with moderate variability (SD = 3.09). VR therapy appears more effective than CBT, particularly for female participants.
+
+```{r create-summary-table, echo=FALSE}
+# Load necessary libraries
+library(knitr)
+library(dplyr)
+
+# Read the data from the CSV file
+data <- read.csv("C:/Users/evan_/Documents/College/participants_data_final.csv")
+
+# Calculate summary statistics
+summary_table <- data %>%
+  group_by(Group, Gender) %>%
+  summarise(
+    Mean_Change = mean(Change_in_Score),
+    SD_Change = sd(Change_in_Score),
+    Count = n()
+  )
+
+# Print table using kable
+kable(summary_table, col.names = c("Group", "Gender", "Mean Change", "SD Change", "Count"),
+      caption = "Effect of VR and CBT Therapy on Depression Scores by Gender")
+
+# Add caption text 
+cat("Table 1: Mean Change in Scores by Gender and Group")
+```
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+```{r}
+plot(cars)
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
